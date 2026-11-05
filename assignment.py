@@ -1,11 +1,14 @@
 # Ellie Khoo
 # AM
 
+# imported date time module
+from datetime import date
+current_date = date.today()
 # dictionary for products, keys are the product, values are the prices
 products = {
-    "Milk": 4.99,
+    "Carrot": 0.30,
     "Yogurt": 3.49,
-    "Chocolate Bar": 2.99,
+    "Garlic": 0.75,
     "Cereal": 4.99,
     "Cheese": 3.99
     }
@@ -114,14 +117,65 @@ def remove_product(shopping_cart):
         removed_item = int(input("Enter item number to remove: "))
         print()
 
+    # gets new quantity by subtracting one from the old quantity
     new_quantity = shopping_cart[list(shopping_cart)[removed_item - 1]] - 1
+    shopping_cart[list(shopping_cart)[removed_item - 1]] = new_quantity
 
+    # prints how many of the product are now in the cart
     print(f"Removed 1 {list(shopping_cart)[removed_item - 1]} from your cart!")
     print(f"{list(shopping_cart)[removed_item - 1]} quantity is now {new_quantity}")
 
+# function to show user the products, quantity, and price in their shopping cart
+def display_cart(shopping_cart, products):
+    print()
+
+    # checks if shopping cart is empty, ends function if it is
+    if len(shopping_cart) == 0:
+        print("There is nothing in your shopping cart!")
+        return 
+    
+    # variables to keep track of total items and subtotal
+    total_items = 0
+    subtotal = 0
+
+    # uses for loop with enumerate and dictionary to print numbered list, 
+    # unit price, quantity, and total of each product 
+    print("=============== YOUR SHOPPING CART ===============")
+    print()
+    print(f"Product     Unit Price     Quantity     Line Total")
+    for index, (product, quantity) in enumerate(shopping_cart.items()):
+        print(f"{index+1}. {product}      ${(products[product]):.2f}          {quantity}          ${(products[product] * quantity):.2f}")
+        
+        total_items += quantity
+        subtotal += (products[product] * quantity)
+    print()
+
+    # prints total items and subtotal using variables that kept track in loop
+    print(f"Total items: {total_items}")
+    print(f"Subtotal: ${subtotal:.2f}")
+
+    # return subtotal so it can be used in calculate current total function
+    return subtotal
+
+# function to calculate subtotal by multiplying quantity of each product by its price
+def calculate_total(shopping_cart, products):
+    print()
+    print("=============== CURRENT TOTAL ===============")
+    subtotal = 0
+    for product, quantity in shopping_cart.items():
+        subtotal += (quantity * products[product])
+    print()
+    
+    # prints subtotal rounded to 2 decimals
+    print(f"Subtotal: ${subtotal:.2f}")
+
+    # returns subtotal to be used to calculate discounts and checkout
+    return subtotal
 
 
-
+# loops through options and calls functions depending on user's choice
+# always loops back to menu function after 
+# if option 6 is chosen, loop is exited
 while user_choice != 6:
 
     if user_choice == 1:
@@ -130,6 +184,54 @@ while user_choice != 6:
         add_product(products, shopping_cart)
     elif user_choice == 3:
         remove_product(shopping_cart)
-        
+    elif user_choice == 4:
+        display_cart(shopping_cart, products)
+    elif user_choice == 5:
+        calculate_total(shopping_cart, products)
 
     user_choice = main_menu()
+
+# gets subtotal from function
+subtotal = calculate_total(shopping_cart, products)
+
+# function to calculate discount after user chooses checkout
+#  exits loop and evaluates discount based on subtotal
+def calculate_discount(subtotal):
+    discount = 0
+    if subtotal > 40:
+        discount = 0.15
+    elif subtotal >= 20:
+        discount = 0.1
+    elif subtotal >= 10:
+        discount = 0.05
+
+    return discount
+
+# gets amount saved by multiplying discount by subtotal
+amount_saved = subtotal * calculate_discount(subtotal)
+
+#  gets final total by multiplying subtotal by discounted 
+# amount and subtracting that from subtotal
+final_total = subtotal - amount_saved
+
+
+# prints final receipt including shopping cart, discount, amount saved, and final total
+print()
+print("=============== RECEIPT ===============")
+print(current_date)
+print()
+if subtotal > 0:
+    print(f"Product     Unit Price     Quantity     Line Total")
+    for index, (product, quantity) in enumerate(shopping_cart.items()):
+        print(f"{index+1}. {product}      ${(products[product]):.2f}          {quantity}          ${(products[product] * quantity):.2f}")
+print()
+print(f"Discount: {calculate_discount(subtotal) * 100}%")
+print(f"Amount Saved: ${amount_saved:.2f}")
+print(f"Final Total: ${final_total:.2f}")
+print()
+if subtotal == 0:
+    print("Come back to buy something next time!")
+else:
+    print("Thank you for shopping!")
+print()
+
