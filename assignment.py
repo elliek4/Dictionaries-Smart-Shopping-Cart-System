@@ -185,7 +185,7 @@ def calculate_total(shopping_cart, products):
 # loops through options and calls functions depending on user's choice
 # always loops back to menu function after 
 # if option 6 is chosen, loop is exited
-while user_choice != 6:
+while user_choice != 6 or len(shopping_cart) == 0:
 
     if user_choice == 1:
         display_products(products)
@@ -197,6 +197,10 @@ while user_choice != 6:
         display_cart(shopping_cart, products)
     elif user_choice == 5:
         calculate_total(shopping_cart, products)
+    elif user_choice == 6:
+        print()
+        print("You cannot checkout!")
+        print("Please fill your shopping cart.")
 
     user_choice = main_menu()
 
@@ -238,9 +242,6 @@ print(f"Discount: {calculate_discount(subtotal) * 100}%")
 print(f"Amount Saved: ${amount_saved:.2f}")
 print(f"Final Total: ${final_total:.2f}")
 print()
-if subtotal == 0:
-    print("Come back to buy something next time!")
-else:
-    print("Thank you for shopping!")
+print("Thank you for shopping!")
 print()
 
