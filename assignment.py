@@ -119,11 +119,20 @@ def remove_product(shopping_cart):
 
     # gets new quantity by subtracting one from the old quantity
     new_quantity = shopping_cart[list(shopping_cart)[removed_item - 1]] - 1
+    
+    # makes sure quantity doesn't become negative
+    if new_quantity < 0:
+        new_quantity = 0
+    
+    # make the product have the new quantity in the dictionary
     shopping_cart[list(shopping_cart)[removed_item - 1]] = new_quantity
 
     # prints how many of the product are now in the cart
     print(f"Removed 1 {list(shopping_cart)[removed_item - 1]} from your cart!")
     print(f"{list(shopping_cart)[removed_item - 1]} quantity is now {new_quantity}")
+
+    if new_quantity == 0:
+        del shopping_cart[list(shopping_cart)[removed_item - 1]]
 
 # function to show user the products, quantity, and price in their shopping cart
 def display_cart(shopping_cart, products):
